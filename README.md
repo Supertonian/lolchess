@@ -4,18 +4,18 @@
 
 ![메인화면](screenshots/mainlayout-v0.1.0.PNG)
 
-### 사용방법
+### 데모
 
-Demo: https://zerostrength.github.io/lolchess/
-
-### 개발진행
-
-#### 기본정보
-
-라이엇에서 정보 받아오기 https://developer.riotgames.com/docs/tft
-
-#### 덱 티어 가져오기
-
-#### 현재 선택한 챔피언과 비교
+https://zerostrength.github.io/lolchess/
 
 ### 기능
+
+- 챔피언 클릭으로 선택/해제 가능
+- 선택된 챔피언 목록에서 레벨 ▲ ▼ 가능
+
+#### 개발정보
+
+- 라이엇에서 static 정보 받아오기 https://developer.riotgames.com/docs/tft
+- API로 상위 티어 매치 정보 가지고 오기
+
+#### 현재 선택한 챔피언과 비교
