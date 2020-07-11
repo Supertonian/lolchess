@@ -5,10 +5,13 @@ import axios from "axios";
 import Avatar from "@material-ui/core/Avatar";
 import Badge from "@material-ui/core/Badge";
 import Box from "@material-ui/core/Box";
+import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
 import Divider from "@material-ui/core/Divider";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Typography from "@material-ui/core/Typography";
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
 import { withStyles } from "@material-ui/core/styles";
 
 const StyledBadge = withStyles((theme) => ({
@@ -56,10 +59,6 @@ function LinearProgressWithLabel(props) {
 }
 
 LinearProgressWithLabel.propTypes = {
-  /**
-   * The value of the progress indicator for the determinate and buffer variants.
-   * Value between 0 and 100.
-   */
   value: PropTypes.number.isRequired,
 };
 
@@ -82,13 +81,22 @@ function Champion({ champ, onclick }) {
   );
 }
 
-function SelectedChampion({ champ }) {
+function SelectedChampion({ champ, onLevelDownClick, onLevelUpClick }) {
   const nameDense = champ.name.replace(" ", "").replace("'", "").toLowerCase();
   const imgLink = `dataset/champions/${nameDense}.png`;
   return (
-    <Box p={0.5}>
-      <Avatar alt={champ.name} src={imgLink} onClick={onclick} />
-    </Box>
+    <Badge badgeContent={champ.level} color="primary">
+      <Box p={0.5}>
+        <Avatar alt={champ.name} src={imgLink} />
+
+        <IconButton aria-label="reduce" size="small" onClick={onLevelDownClick}>
+          <RemoveIcon fontSize="small" />
+        </IconButton>
+        <IconButton aria-label="increase" size="small" onClick={onLevelUpClick}>
+          <AddIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    </Badge>
   );
 }
 
@@ -127,6 +135,7 @@ class App extends React.Component {
             return;
           }
           c.selected = true;
+          champ.level = 1;
           pickedList.push(champ);
         }
       }
@@ -136,6 +145,20 @@ class App extends React.Component {
       champs: newChamp,
       progress: 100 * (pickedList.length / 9),
     });
+  }
+
+  onLevelClick(champ, value) {
+    const pickedList = [...this.state.picked];
+    for (let i = 0; i < pickedList.length; i += 1) {
+      if (pickedList[i].name === champ.name) {
+        const level = pickedList[i].level + value;
+        if (level >= 1 && level <= 3) {
+          pickedList[i].level = level;
+        }
+        break;
+      }
+    }
+    this.setState({ picked: [...pickedList] });
   }
 
   render() {
@@ -180,7 +203,14 @@ class App extends React.Component {
             m={0.5}
           >
             {this.state.picked.map((pick, i) => {
-              return <SelectedChampion champ={pick} key={i} />;
+              return (
+                <SelectedChampion
+                  champ={pick}
+                  key={i}
+                  onLevelDownClick={() => this.onLevelClick(pick, -1)}
+                  onLevelUpClick={() => this.onLevelClick(pick, 1)}
+                />
+              );
             })}
           </Box>
         </Container>
