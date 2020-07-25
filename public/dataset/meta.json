@@ -1,0 +1,72 @@
+[
+    {
+        "id": 1,
+        "name": "우주비행사 저격수",
+        "champs": [
+            "Caitlyn",
+            "Nautilus",
+            "Ashe",
+            "Gnar",
+            "Wukong",
+            "Jhin",
+            "Teemo",
+            "Lulu"
+        ]
+    },
+    {
+        "id": 2,
+        "name": "마법사 별수호자",
+        "champs": [
+            "Jarvan IV",
+            "Zoe",
+            "Ahri",
+            "Neeko",
+            "Syndra",
+            "Soraka",
+            "Janna",
+            "Xerath"
+        ]
+    },
+    {
+        "id": 3,
+        "name": "선봉대 신비술사",
+        "champs": [
+            "Nautilus",
+            "Mordekaiser",
+            "Jayce",
+            "Karma",
+            "Cassiopeia",
+            "Soraka",
+            "Wukong",
+            "Lulu"
+        ]
+    },
+    {
+        "id": 4,
+        "name": "천상 수호자",
+        "champs": [
+            "Jarvan IV",
+            "Rakan",
+            "Xin Zhao",
+            "Neeko",
+            "Ashe",
+            "Karma",
+            "Jhin",
+            "Lulu"
+        ]
+    },
+    {
+        "id": 5,
+        "name": "4 암흑의 별",
+        "champs": [
+            "Jarvan IV",
+            "Rakan",
+            "Shaco",
+            "Ashe",
+            "Karma",
+            "Soraka",
+            "Jhin",
+            "Fizz"
+        ]
+    }
+]
