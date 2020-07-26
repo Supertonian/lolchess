@@ -1,43 +1,43 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./App.css";
-import axios from "axios";
-import Avatar from "@material-ui/core/Avatar";
-import Badge from "@material-ui/core/Badge";
-import Box from "@material-ui/core/Box";
-import IconButton from "@material-ui/core/IconButton";
-import Container from "@material-ui/core/Container";
-import Divider from "@material-ui/core/Divider";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Typography from "@material-ui/core/Typography";
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
-import { withStyles } from "@material-ui/core/styles";
+import React from 'react';
+import PropTypes from 'prop-types';
+import './App.css';
+import axios from 'axios';
+import Avatar from '@material-ui/core/Avatar';
+import Badge from '@material-ui/core/Badge';
+import Box from '@material-ui/core/Box';
+import IconButton from '@material-ui/core/IconButton';
+import Container from '@material-ui/core/Container';
+import Divider from '@material-ui/core/Divider';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Typography from '@material-ui/core/Typography';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+import { withStyles } from '@material-ui/core/styles';
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
-    backgroundColor: "#44b700",
-    color: "#44b700",
+    backgroundColor: '#44b700',
+    color: '#44b700',
     boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    "&::after": {
-      position: "absolute",
+    '&::after': {
+      position: 'absolute',
       top: 0,
       left: 0,
-      width: "100%",
-      height: "100%",
-      borderRadius: "50%",
-      animation: "$ripple 1.2s infinite ease-in-out",
-      border: "1px solid currentColor",
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      animation: '$ripple 1.2s infinite ease-in-out',
+      border: '1px solid currentColor',
       content: '""',
     },
   },
-  "@keyframes ripple": {
-    "0%": {
-      transform: "scale(.8)",
+  '@keyframes ripple': {
+    '0%': {
+      transform: 'scale(.8)',
       opacity: 1,
     },
-    "100%": {
-      transform: "scale(2.4)",
+    '100%': {
+      transform: 'scale(2.4)',
       opacity: 0,
     },
   },
@@ -45,14 +45,12 @@ const StyledBadge = withStyles((theme) => ({
 
 function LinearProgressWithLabel(props) {
   return (
-    <Box display="flex" alignItems="center">
-      <Box width="100%" mr={1}>
-        <LinearProgress variant="determinate" {...props} />
+    <Box display='flex' alignItems='center'>
+      <Box width='100%' mr={1}>
+        <LinearProgress variant='determinate' {...props} />
       </Box>
       <Box minWidth={35}>
-        <Typography variant="body2" color="textSecondary">{`${Math.round(
-          props.value
-        )}%`}</Typography>
+        <Typography variant='body2' color='textSecondary'>{`${Math.round(props.value)}%`}</Typography>
       </Box>
     </Box>
   );
@@ -63,17 +61,17 @@ LinearProgressWithLabel.propTypes = {
 };
 
 function Champion({ champ, onclick }) {
-  const nameDense = champ.name.replace(" ", "").replace("'", "").toLowerCase();
+  const nameDense = champ.name.replace(' ', '').replace("'", '').toLowerCase();
   const imgLink = `dataset/champions/${nameDense}.png`;
   return (
     <Box p={0.5}>
       <StyledBadge
-        overlap="circle"
+        overlap='circle'
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
+          vertical: 'bottom',
+          horizontal: 'right',
         }}
-        variant={champ.selected ? "dot" : "standard"}
+        variant={champ.selected ? 'dot' : 'standard'}
       >
         <Avatar alt={champ.name} src={imgLink} onClick={onclick} />
       </StyledBadge>
@@ -82,37 +80,85 @@ function Champion({ champ, onclick }) {
 }
 
 function SelectedChampion({ champ, onLevelDownClick, onLevelUpClick }) {
-  const nameDense = champ.name.replace(" ", "").replace("'", "").toLowerCase();
+  const nameDense = champ.name.replace(' ', '').replace("'", '').toLowerCase();
   const imgLink = `dataset/champions/${nameDense}.png`;
   return (
-    <Badge badgeContent={champ.level} color="primary">
+    <Badge badgeContent={champ.level} color='primary'>
       <Box p={0.5}>
         <Avatar alt={champ.name} src={imgLink} />
 
-        <IconButton aria-label="reduce" size="small" onClick={onLevelDownClick}>
-          <RemoveIcon fontSize="small" />
+        <IconButton aria-label='reduce' size='small' onClick={onLevelDownClick}>
+          <RemoveIcon fontSize='small' />
         </IconButton>
-        <IconButton aria-label="increase" size="small" onClick={onLevelUpClick}>
-          <AddIcon fontSize="small" />
+        <IconButton aria-label='increase' size='small' onClick={onLevelUpClick}>
+          <AddIcon fontSize='small' />
         </IconButton>
       </Box>
     </Badge>
   );
 }
 
+function MetaRankItem({ meta, score }) {
+  return (
+    <React.Fragment>
+      <h3>
+        {meta.name} (점수: {score})
+      </h3>
+      <Box flexWrap='nowrap' display='flex' flexDirection='row' p={0.5} m={0.5}>
+        {meta.champs.map((champ, i) => {
+          return <Champion key={i} champ={champ} />;
+        })}
+      </Box>
+    </React.Fragment>
+  );
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { champs: [], picked: [], progress: 0 };
+    this.state = { champs: [], picked: [], progress: 0, meta: [], matchList: [] };
   }
   componentDidMount() {
-    axios.get("dataset/champions.json").then((response) => {
+    axios.get('dataset/champions.json').then((response) => {
       if (response.request.status === 200) {
         this.setState({
           champs: [...response.data].sort((a, b) => a.cost - b.cost),
         });
       }
     });
+
+    axios.get('dataset/meta.json').then((response) => {
+      if (response.request.status === 200) {
+        this.setState({
+          meta: [...response.data],
+        });
+      }
+    });
+  }
+
+  matchMeta(pickedList) {
+    const pickedChamps = pickedList.map((picked) => picked.name);
+    const metaList = [...this.state.meta];
+    const matchList = [];
+    metaList.forEach((meta) => {
+      const champs = meta.champs;
+      let count = 0;
+
+      const newChamps = [];
+
+      champs.forEach((champ) => {
+        if (pickedChamps.includes(champ)) {
+          count += 1;
+          newChamps.push({ name: champ, selected: 1 });
+        } else {
+          newChamps.push({ name: champ, selected: 0 });
+        }
+      });
+      const newMeta = { ...meta };
+      newMeta.champs = newChamps;
+      matchList.push([newMeta, count]);
+    });
+    return [...matchList].sort((a, b) => b[1] - a[1]);
   }
 
   onChampClick(champ) {
@@ -131,7 +177,7 @@ class App extends React.Component {
           }
         } else {
           if (pickedList.length === 9) {
-            console.log("you picked more than 9");
+            console.log('you picked more than 9');
             return;
           }
           c.selected = true;
@@ -140,10 +186,14 @@ class App extends React.Component {
         }
       }
     });
+
+    const matchList = this.matchMeta(pickedList);
+
     this.setState({
       picked: [...pickedList].sort((a, b) => a.cost - b.cost),
       champs: newChamp,
       progress: 100 * (pickedList.length / 9),
+      matchList: matchList,
     });
   }
 
@@ -163,45 +213,26 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
+      <div className='App'>
         <Container>
           <h3>챔피언 목록</h3>
           {[1, 2, 3, 4, 5].map((cost, index) => {
             return (
-              <Box
-                flexWrap="nowrap"
-                display="flex"
-                flexDirection="row"
-                p={0.5}
-                m={0.5}
-                key={index}
-              >
+              <Box flexWrap='nowrap' display='flex' flexDirection='row' p={0.5} m={0.5} key={index}>
                 {this.state.champs
                   .filter((champ) => champ.cost === cost)
                   .map((champ, i) => {
-                    return (
-                      <Champion
-                        onclick={() => this.onChampClick(champ)}
-                        champ={champ}
-                        key={i}
-                      />
-                    );
+                    return <Champion onclick={() => this.onChampClick(champ)} champ={champ} key={i} />;
                   })}
               </Box>
             );
           })}
         </Container>
-        <Divider component="div" />
+        <Divider component='div' />
 
         <Container>
           <h3>나의 덱</h3>
-          <Box
-            flexWrap="nowrap"
-            display="flex"
-            flexDirection="row"
-            p={0.5}
-            m={0.5}
-          >
+          <Box flexWrap='nowrap' display='flex' flexDirection='row' p={0.5} m={0.5}>
             {this.state.picked.map((pick, i) => {
               return (
                 <SelectedChampion
@@ -215,11 +246,19 @@ class App extends React.Component {
           </Box>
         </Container>
 
-        <Divider component="div" />
+        <Divider component='div' />
 
         <Container>
           <h3>덱 완성도</h3>
           <LinearProgressWithLabel value={this.state.progress} />
+        </Container>
+
+        <Container>
+          <h2>매칭 덱 목록</h2>
+          {this.state.matchList.length === 0 && <h4>선택된 챔피언이 없습니다</h4>}
+          {this.state.matchList.map((meta, i) => {
+            return <MetaRankItem key={i} meta={meta[0]} score={meta[1]} />;
+          })}
         </Container>
       </div>
     );
